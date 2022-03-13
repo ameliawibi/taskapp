@@ -1,0 +1,44 @@
+GET http://localhost:3004/
+###
+
+GET http://localhost:3004/auth/signup
+###
+
+POST http://localhost:3004/auth/signup
+###
+
+GET http://localhost:3004/auth/login
+###
+
+POST http://localhost:3004/auth/login
+###
+
+GET http://localhost:3004/auth/logout
+###
+
+GET http://localhost:3004/task/add
+###
+
+POST http://localhost:3004/task/add
+###
+
+GET http://localhost:3004/task
+###
+
+GET http://localhost:3004/task/1/edit
+###
+
+PUT http://localhost:3004/task/1/edit
+###
+
+DELETE http://localhost:3004/task/1/delete
+###
+
+POST http://localhost:3004/task/1/comment
+###
+
+POST http://localhost:3004/task/1/comment
+###
+
+POST http://localhost:3004/task/label
+###
