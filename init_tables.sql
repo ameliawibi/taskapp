@@ -24,9 +24,9 @@ CREATE TABLE tasks (
   name TEXT,
   description TEXT,
   assigned_to INTEGER,
-  status INTEGER,
+  task_status_id INTEGER,
   CONSTRAINT fk_tasks_status_id
-  FOREIGN KEY (status)
+  FOREIGN KEY (task_status_id)
   REFERENCES task_statuses(id)
   ON DELETE CASCADE
   ,
