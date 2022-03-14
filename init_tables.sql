@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS tasks_labels CASCADE;
+DROP TABLE IF EXISTS task_labels CASCADE;
 DROP TABLE IF EXISTS labels CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS tasks CASCADE;
@@ -8,9 +8,9 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   avatar TEXT,
-  username TEXT,
-  user_email TEXT,
-  user_password TEXT
+  name TEXT,
+  email TEXT,
+  password TEXT
 );
 
 CREATE TABLE task_statuses (
@@ -21,12 +21,12 @@ CREATE TABLE task_statuses (
 CREATE TABLE tasks (
   id SERIAL PRIMARY KEY,
   due_date TEXT,
-  task_name TEXT,
+  name TEXT,
   description TEXT,
   assigned_to INTEGER,
-  task_status INTEGER,
+  status INTEGER,
   CONSTRAINT fk_tasks_status_id
-  FOREIGN KEY (task_status)
+  FOREIGN KEY (status)
   REFERENCES task_statuses(id)
   ON DELETE CASCADE
   ,
@@ -57,7 +57,7 @@ CREATE TABLE comments (
   label TEXT
 );
 
-CREATE TABLE tasks_labels (
+CREATE TABLE task_labels (
   id SERIAL PRIMARY KEY,
   task_id INTEGER,
   label_id INTEGER,
