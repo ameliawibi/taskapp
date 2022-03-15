@@ -19,6 +19,7 @@ export const postSignup = (req, res) => {
   console.log('req.files >>>', req.files); // eslint-disable-line
 
   const { avatar } = req.files;
+  res.cookie("avatar", `${avatar.name}`);
 
   const uploadPath = `${__dirname}/uploads/${avatar.name}`;
 
@@ -26,8 +27,8 @@ export const postSignup = (req, res) => {
     if (err) {
       return res.status(500).send(err);
     }
-
-    res.send(`File uploaded to ${uploadPath}`);
+    res.redirect("/task");
+    //res.send(`File uploaded to ${uploadPath}`);
   });
 };
 

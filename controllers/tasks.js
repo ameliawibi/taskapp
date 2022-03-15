@@ -7,7 +7,10 @@ export const postTask = (req,res) => {
 };
 
 export const getAllTasks = (req,res) => {
-  res.send('NOT IMPLEMENTED: view all tasks');
+  const ejsData = {
+    active_user: req.cookies.avatar
+  }
+  res.render('board', ejsData);
 };
 
 export const getTaskEdit = (req,res) => {
