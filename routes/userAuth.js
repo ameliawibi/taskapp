@@ -3,6 +3,9 @@ import methodOverride from 'method-override';
 import {
   getSignup, postSignup, getLogin, postLogin, getLogout,
 } from '../controllers/userAuth';
+import {
+  loginValidator,signUpValidator
+} from "../utility/validator";
 
 const authRouter = express.Router();
 // Configure Express to parse request body data into request.body
@@ -12,11 +15,11 @@ authRouter.use(methodOverride('_method'));
 
 authRouter.get('/signup', getSignup);
 
-authRouter.post('/signup', postSignup);
+authRouter.post('/signup', signUpValidator, postSignup);
 
 authRouter.get('/login', getLogin);
 
-authRouter.post('/login', postLogin);
+authRouter.post('/login',loginValidator, postLogin);
 
 authRouter.get('/logout', getLogout);
 
