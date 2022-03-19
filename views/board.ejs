@@ -3,15 +3,15 @@
 <p><%= key %></p>
 <p><%= value.length %></p>
 
-<% value.forEach((element) => { %> <% ejsLabel.forEach(item => { %> <%
-if(element.id === item.id) { %>
+<% value.forEach((element) => { ejsLabel.forEach(item => { if(element.id ===
+item.id) { %>
 <p><%= item.label %></p>
-<% } %> <%});%>
+<% } });%>
 
 <p><%= element.due_date %></p>
 <p><%= element.task_name %></p>
 <p><%= element.user_avatar %></p>
-<% }); %> <% }; %>
+<% }); }; %>
 
 <!-- Component Start -->
 <div
