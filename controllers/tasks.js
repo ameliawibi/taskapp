@@ -1,5 +1,6 @@
 import "dotenv/config";
 import {getHashedCookie} from "../utility/hash";
+import {pool} from "../utility/connect";
 const salt = process.env.SECRET_KEY;
 
 export const getTaskPost = (req,res) => {
@@ -18,10 +19,33 @@ export const getAllTasks = (req,res) => {
     res.status(403).redirect("/auth/login");
     return;
   }
-  const ejsData = {
-    active_user: req.cookies.avatar
-  }
-  res.render('board', ejsData);
+  let ejsData = {};
+  let ejsLabel;
+  let getAllQuery = 'SELECT task_statuses.status,tasks.id,tasks.due_date,tasks.name AS task_name,tasks.description,tasks.assigned_to,users.avatar AS user_avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id ';
+  pool.query(getAllQuery).then((result) => {
+      for (let i = 0; i < result.rows.length; i++) {
+        let status = result.rows[i].status;
+        var objects = result.rows[i];
+
+        if (status in ejsData) {
+          ejsData[status].push(objects);
+        }
+        else {
+          ejsData[status] = [objects];
+        }
+      };
+      
+      return pool.query(
+      `SELECT tasks.id,labels.label FROM tasks INNER JOIN task_labels ON tasks.id = task_labels.task_id INNER JOIN labels ON labels.id = task_labels.label_id`
+    );
+  })
+  .then((labelResult) => {
+    if (labelResult.rows) {
+      ejsLabel = labelResult.rows;
+    }
+    res.render('board', {'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel});
+  })
+  .catch((error) => console.log(error.stack));
 };
 
 export const getTaskEdit = (req,res) => {
