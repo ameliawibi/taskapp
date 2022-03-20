@@ -5,6 +5,7 @@ import {
 } from '../controllers/tasks';
 import { postComment } from '../controllers/comments';
 import postLabel from '../controllers/labels';
+import {restrictToLoggedIn} from "../utility/hash";
 
 const taskRouter = express.Router();
 // Configure Express to parse request body data into request.body
@@ -17,7 +18,7 @@ taskRouter.get('/add', getTaskPost);
 
 taskRouter.post('/add', postTask);
 
-taskRouter.get('/', getAllTasks);
+taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 
 taskRouter.get('/:id/edit', getTaskEdit);
 

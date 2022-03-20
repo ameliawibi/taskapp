@@ -10,6 +10,10 @@ const salt = process.env.SECRET_KEY;
 let errorMessage = [];
 
 export const getSignup = (req, res) => {
+  if( req.isUserLoggedIn === true ){
+    res.redirect('/');
+    return;
+  }
     const ejsData = {
     error: errorMessage,
   };
@@ -18,6 +22,11 @@ export const getSignup = (req, res) => {
 };
 
 export const postSignup = (req, res) => {
+if( req.isUserLoggedIn === true ){
+    res.redirect('/');
+    return;
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty() || !req.files || Object.keys(req.files).length === 0) {
     //store error message and session data
@@ -52,6 +61,10 @@ export const postSignup = (req, res) => {
 };
 
 export const getLogin = (req, res) => {
+  if( req.isUserLoggedIn === true ){
+    res.redirect('/');
+    return;
+  }
     const ejsData = {
     error: errorMessage,
   };
@@ -60,6 +73,10 @@ export const getLogin = (req, res) => {
 };
 
 export const postLogin = (req, res) => {
+  if( req.isUserLoggedIn === true ){
+    res.redirect('/');
+    return;
+  }
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //store error message and session data

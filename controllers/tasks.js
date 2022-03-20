@@ -12,13 +12,6 @@ export const postTask = (req,res) => {
 };
 
 export const getAllTasks = (req,res) => {
-  const user_id = req.cookies.userID;
-  const hashedCookieString = getHashedCookie(user_id, salt);
-
-  if (req.cookies.loggedInHash !== hashedCookieString) {
-    res.status(403).redirect("/auth/login");
-    return;
-  }
   let ejsData = {};
   let ejsLabel;
   let ejsComment;
