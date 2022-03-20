@@ -65,17 +65,32 @@ const ejsLabel = [
   { id: 5, label: 'Back end' }
 ]
 
+const ejsComment = [
+  { count: '2', id: 4 },
+  { count: '2', id: 2 },
+  { count: '2', id: 3 },
+  { count: '2', id: 1 }
+]
+
 for (const [key, value] of Object.entries(ejsData)) {
   console.log(key);
   console.log(value.length);
   value.forEach(element => {
+    
     ejsLabel.forEach(item => {
       if(element.id === item.id) {
         console.log(item.label);
       }
     });
-    console.log(element.due_date);
     console.log(element.task_name);
+    console.log(element.due_date);
+
+    ejsComment.forEach(item => {
+      if(element.id === item.id) {
+        console.log(item.count);
+      }
+    });
+
     console.log(element.user_avatar);
   });
 }
