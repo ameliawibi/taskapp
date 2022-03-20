@@ -22,7 +22,7 @@ export const getAllTasks = (req,res) => {
   let ejsData = {};
   let ejsLabel;
   let ejsComment;
-  let getAllQuery = 'SELECT task_statuses.status,tasks.id,tasks.due_date,tasks.name AS task_name,tasks.description,tasks.assigned_to,users.avatar AS user_avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id ';
+  let getAllQuery = 'SELECT task_statuses.status,tasks.id,tasks.due_date,tasks.name AS task_name,tasks.description,tasks.assigned_to,users.avatar AS user_avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id ORDER BY task_statuses.id';
   pool.query(getAllQuery).then((result) => {
       for (let i = 0; i < result.rows.length; i++) {
         let status = result.rows[i].status;
@@ -53,7 +53,6 @@ GROUP BY tasks.id;`
   .then((commentCounter) => {
     if (commentCounter.rows) {
       ejsComment = commentCounter.rows;
-      console.log(ejsComment);
     }
   res.render('board', {'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel, 'ejsComment':ejsComment});
   })
