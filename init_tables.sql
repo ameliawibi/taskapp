@@ -25,6 +25,7 @@ CREATE TABLE tasks (
   description TEXT,
   assigned_to INTEGER,
   task_status_id INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT fk_tasks_status_id
   FOREIGN KEY (task_status_id)
   REFERENCES task_statuses(id)
@@ -41,6 +42,7 @@ CREATE TABLE comments (
   comment TEXT,
   task_id INTEGER,
   user_id INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT fk_comments_task_id
   FOREIGN KEY (task_id)
   REFERENCES tasks(id)

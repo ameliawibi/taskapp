@@ -16,9 +16,6 @@ export const loginValidator = [
 ];
 
 export const signUpValidator = [
-  check("avatar").not()
-    .isEmpty()
-    .withMessage("You must select an image"),
   check("name").not()
     .isEmpty()
     .withMessage("This field is required"),

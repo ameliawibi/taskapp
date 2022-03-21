@@ -1,4 +1,4 @@
-INSERT INTO users (avatar,name,email,password) VALUES ('user1.jpeg','Nina Simpson','nina@email.com','password'),('user2.jpeg','Sofia Johnson','sofia@email.com','password'),('user3.jpeg','Norman Freeman','norman@email.com','password');
+INSERT INTO users (avatar,name,email,password) VALUES ('user1.jpeg','Nina Simpson','nina@email.com','b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86'),('user2.jpeg','Sofia Johnson','sofia@email.com','b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86'),('user3.jpeg','Norman Freeman','norman@email.com','b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86');
 
 INSERT INTO task_statuses (status) VALUES ('To do'),('In progress'),('In review'),('Done');
 
