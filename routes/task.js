@@ -6,6 +6,9 @@ import {
 import { postComment } from '../controllers/comments';
 import postLabel from '../controllers/labels';
 import {restrictToLoggedIn} from "../utility/hash";
+import {
+  taskValidator
+} from "../utility/validator";
 
 const taskRouter = express.Router();
 // Configure Express to parse request body data into request.body
@@ -14,9 +17,9 @@ taskRouter.use(express.urlencoded({ extended: false }));
 taskRouter.use(methodOverride('_method'));
 
 /// TASK ROUTES ///
-taskRouter.get('/add', getTaskPost);
+taskRouter.get('/add',restrictToLoggedIn, getTaskPost);
 
-taskRouter.post('/add', postTask);
+taskRouter.post('/add', taskValidator, postTask);
 
 taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 

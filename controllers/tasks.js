@@ -1,14 +1,73 @@
 import "dotenv/config";
-import {getHashedCookie} from "../utility/hash";
 import {pool} from "../utility/connect";
+import { validationResult } from "express-validator";
 const salt = process.env.SECRET_KEY;
+let errorMessage = [];
+let payload ={};
 
 export const getTaskPost = (req,res) => {
-  res.send('NOT IMPLEMENTED: render add new task form');
+  let ejsData = {
+    active_user: req.cookies.avatar,
+    error: errorMessage,
+    due_date : "due_date" in payload ? payload.due_date : "",
+    name: "name" in payload ? payload.name : "",
+    description: "description" in payload ? payload.description : "",
+    assigned_to: "assigned_to" in payload ? payload.assigned_to : "",
+    label_id: "label_id" in payload ? payload.label_id : [],
+  };
+
+  pool.query('SELECT * FROM users').then((userList)  => {
+  if (userList.rows) {
+    ejsData.assigned_to_options = userList.rows;
+  }
+    return pool.query('SELECT * from labels')
+     }).then((labelList) => {
+   if (labelList.rows) {
+     ejsData.label_options = labelList.rows;
+   }
+   //console.log(ejsData);
+   errorMessage = [];
+   payload = {};
+   //res.send('NOT IMPLEMENTED: render add new task form');
+   res.render('addTask',ejsData);
+  })
+  .catch((error) => console.log(error.stack));  
 };
 
 export const postTask = (req,res) => {
-  res.send('NOT IMPLEMENTED: add new task');
+  //console.log(req.body);
+  payload = req.body;
+  //console.log(payload);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    //store error message and session data
+    errorMessage = errors.errors;
+    res.redirect("/task/add");
+    return;
+  }
+  
+  const task = req.body;
+ 
+  const taskInput = [
+    task.due_date,
+    task.name,
+    task.description,
+    Number(task.assigned_to),
+    1,
+  ];
+  const taskQuery = 'INSERT INTO tasks (due_date,name,description,assigned_to,task_status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
+
+  pool.query(taskQuery,taskInput).then((result) => {
+    const taskId = result.rows[0].id;
+    const labelArray = task.label_id;
+    labelArray.forEach((labelId) => {
+      const labelQuery = 'INSERT INTO task_labels (task_id,label_id) VALUES ($1,$2)'
+      const labelInput = [taskId,labelId];
+      return pool.query(labelQuery,labelInput)
+    })}).then((finalResult) => {
+      res.redirect("/task");
+  })
+  .catch((error) => console.log(error.stack)); 
 };
 
 export const getAllTasks = (req,res) => {
