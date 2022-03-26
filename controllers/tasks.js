@@ -6,6 +6,7 @@ let errorMessage = [];
 let payload ={};
 
 export const getTaskPost = (req,res) => {
+
   let ejsData = {
     active_user: req.cookies.avatar,
     error: errorMessage,
@@ -14,6 +15,7 @@ export const getTaskPost = (req,res) => {
     description: "description" in payload ? payload.description : "",
     assigned_to: "assigned_to" in payload ? payload.assigned_to : "",
     label_id: "label_id" in payload ? payload.label_id : [],
+    task_status_id: req.params.statusid,
   };
 
   pool.query('SELECT * FROM users').then((userList)  => {
@@ -42,7 +44,7 @@ export const postTask = (req,res) => {
   if (!errors.isEmpty()) {
     //store error message and session data
     errorMessage = errors.errors;
-    res.redirect("/task/add");
+    res.redirect(`/task/add/${req.params.statusid}`);
     return;
   }
   
@@ -53,7 +55,7 @@ export const postTask = (req,res) => {
     task.name,
     task.description,
     Number(task.assigned_to),
-    1,
+    Number(req.params.statusid),
   ];
   const taskQuery = 'INSERT INTO tasks (due_date,name,description,assigned_to,task_status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
 

@@ -17,9 +17,10 @@ taskRouter.use(express.urlencoded({ extended: false }));
 taskRouter.use(methodOverride('_method'));
 
 /// TASK ROUTES ///
-taskRouter.get('/add',restrictToLoggedIn, getTaskPost);
+taskRouter.post('/add/:statusid',restrictToLoggedIn, taskValidator, postTask);
 
-taskRouter.post('/add', taskValidator, postTask);
+taskRouter.get('/add/:statusid',restrictToLoggedIn, getTaskPost);
+
 
 taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 
