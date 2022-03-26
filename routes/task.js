@@ -26,7 +26,7 @@ taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 
 taskRouter.get('/:id/edit', restrictToLoggedIn, getTaskEdit);
 
-taskRouter.put('/:id/edit', editTask);
+taskRouter.put('/:id/edit',taskValidator, editTask);
 
 taskRouter.delete('/:id/delete', deleteTask);
 

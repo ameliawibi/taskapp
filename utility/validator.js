@@ -54,4 +54,3 @@ export const taskValidator = [
     .isArray({ min: 2, max: 10 })
     .withMessage("At least 2 is required"),
 ];
-
