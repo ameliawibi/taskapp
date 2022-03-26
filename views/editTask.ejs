@@ -95,7 +95,7 @@
   <select name="label_id" class="form-multiselect block w-full mt-1 input" multiple>
 
 <% ejsLabelOptions.forEach((item) => { %>
-    <% let selectLabel = (ejsLabel.includes(item.id)) ? "selected" : ""; %>
+    <% let selectLabel = (ejsLabel.includes(item.id.toString())) ? "selected" : ""; %>
     <option value="<%= item.id %>" <%= selectLabel %> ><%= item.label %></option>
  <% }); %>
 
