@@ -114,7 +114,60 @@ GROUP BY tasks.id;`
 };
 
 export const getTaskEdit = (req,res) => {
-  res.send('NOT IMPLEMENTED: render single task edit form');
+  let ejsData = {};
+  let ejsLabel = [];
+  let ejsLabelOptions;
+  let ejsStatusOptions;
+  let ejsUser;
+  let ejsComment;
+  let getAllQuery = `SELECT task_statuses.id AS task_status_id, task_statuses.status,tasks.id,tasks.due_date,tasks.name,tasks.description,tasks.assigned_to,users.avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id WHERE tasks.id = ${req.params.id}`;
+  pool.query(getAllQuery).then((result) => {
+      ejsData = result.rows[0];
+      
+      return pool.query(
+      `SELECT labels.id,labels.label FROM tasks INNER JOIN task_labels ON tasks.id = task_labels.task_id INNER JOIN labels ON labels.id = task_labels.label_id WHERE tasks.id = ${req.params.id}`
+    );
+  })
+  .then((labelResult) => {
+    if (labelResult.rows) {
+      labelResult.rows.forEach((data) => {
+      ejsLabel.push(data.id);
+      });
+    }
+    return pool.query('SELECT * FROM users')
+  })
+  .then((userList) => {
+    if (userList.rows) {
+      ejsUser = userList.rows;
+    }
+    return pool.query('SELECT * FROM task_statuses')
+  })
+  .then((statusOptions) => {
+    if (statusOptions.rows) {
+      ejsStatusOptions = statusOptions.rows;
+    }
+    return pool.query('SELECT * FROM labels')
+  })
+  .then((labelList) => {
+    if (labelList.rows) {
+      ejsLabelOptions = labelList.rows;
+    }
+    return pool.query(
+      `SELECT * FROM comments
+INNER JOIN tasks ON comments.task_id = tasks.id
+WHERE tasks.id = ${req.params.id};`
+    )
+  })
+  .then((commentCounter) => {
+    if (commentCounter.rows) {
+      ejsComment = commentCounter.rows;
+    }
+  let error = errorMessage;
+  errorMessage = [];
+  //res.json({'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel, 'ejsUser': ejsUser, 'ejsStatusOptions': ejsStatusOptions,'ejsLabelOptions': ejsLabelOptions, 'ejsComment':ejsComment, 'error': error});
+  res.render('editTask', {'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel, 'ejsUser': ejsUser, 'ejsStatusOptions': ejsStatusOptions,'ejsLabelOptions': ejsLabelOptions, 'ejsComment':ejsComment, 'error': error});
+  })
+  .catch((err) => console.log(err.stack));
 };
 
 export const editTask = (req,res) => {

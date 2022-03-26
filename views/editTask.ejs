@@ -1,0 +1,111 @@
+<%- include('header', {title: `Edit task`}); -%> <%- include('navbar'); -%>
+
+<div class="block p-6 rounded-lg bg-white max-w-md">
+  
+  <form autocomplete="off" action="/task/<%=ejsData.id%>/edit?_method=PUT" method="POST">
+    <h2 class="text-lg">Edit task</h2>
+  <p>Existing task will be updated</p>
+  <br/>
+      <label for ="task_status_id" class="label">
+  Task status
+  <select name="task_status_id" class="form-select appearance-none
+      block
+      w-full
+      px-3
+      py-1.5
+      text-sm
+      font-normal
+      text-gray-700
+      bg-white bg-clip-padding bg-no-repeat
+      border border-solid border-gray-300
+      rounded
+      transition
+      ease-in-out
+      m-0
+      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+    <option value="" disabled selected hidden>Select status</option>
+<% ejsStatusOptions.forEach((item) => { %>
+      <% let selectBoolean = ( ejsData.task_status_id == item.id ) ? "selected" : ""; %>
+    <option value="<%= item.id %>" <%= selectBoolean %> ><%= item.status %></option>
+    <% }); %>
+  </select>
+</label>
+<p class="errormsg"><%= error.filter(item => item.param === 'task_status_id').map(item => item.msg) %></p>
+<br/>
+
+  <label for="due_date" class="label">Due date</label>
+      <div class="relative">
+      <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+      </div>
+      <input id="date" name="due_date" datepicker type="text" class="form-control input" placeholder="MM/DD/YYYY" value="<%=ejsData.due_date%>">
+      <p class="errormsg"><%= error.filter(item => item.param === 'due_date').map(item => item.msg) %></p>
+      </div>
+      <br/>
+
+  <div class="form-group mb-6">
+      <label class="label" for="name">Task name</label>
+      <input type="text" name="name" class="form-control input" id="exampleInput7"
+        placeholder="Task name" value="<%=ejsData.name%>">
+        <p class="errormsg"><%= error.filter(item => item.param === 'name').map(item => item.msg) %></p>
+    </div>
+
+  <div class="mb-3 xl:w-96">
+    <label for="description" class="form-label inline-block mb-2 text-gray-700"
+      >Task description</label
+    >
+    <textarea
+      class="form-control input"
+      id="exampleFormControlTextarea1"
+      name="description"
+      rows="3"
+      placeholder="Enter brief description here"
+    ><%=ejsData.description%></textarea>
+    <p class="errormsg"><%= error.filter(item => item.param === 'description').map(item => item.msg) %></p>
+  </div>
+
+    <label for ="assigned_to" class="label">
+  Assign to
+  <select name="assigned_to" class="form-select appearance-none
+      block
+      w-full
+      px-3
+      py-1.5
+      text-sm
+      font-normal
+      text-gray-700
+      bg-white bg-clip-padding bg-no-repeat
+      border border-solid border-gray-300
+      rounded
+      transition
+      ease-in-out
+      m-0
+      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+    <option value="" disabled selected hidden>Select user</option>
+<% ejsUser.forEach((item) => { %>
+      <% let selectBoolean = ( ejsData.assigned_to == item.id ) ? "selected" : ""; %>
+    <option value="<%= item.id %>" <%= selectBoolean %> ><%= item.name %></option>
+    <% }); %>
+  </select>
+</label>
+<p class="errormsg"><%= error.filter(item => item.param === 'assigned_to').map(item => item.msg) %></p>
+<br/>
+
+<label for ="label_id" class="label">
+  Label
+  <select name="label_id" class="form-multiselect block w-full mt-1 input" multiple>
+
+<% ejsLabelOptions.forEach((item) => { %>
+    <% let selectLabel = (ejsLabel.includes(item.id)) ? "selected" : ""; %>
+    <option value="<%= item.id %>" <%= selectLabel %> ><%= item.label %></option>
+ <% }); %>
+
+  </select>
+</label>
+<p class="errormsg"><%= error.filter(item => item.param === 'label_id').map(item => item.msg) %></p>
+<br/>
+    <button type="submit" class="btn">Submit</button>
+    </div>
+    
+  </form>
+  </body>
+</html>

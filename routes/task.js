@@ -24,7 +24,7 @@ taskRouter.get('/add/:statusid',restrictToLoggedIn, getTaskPost);
 
 taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 
-taskRouter.get('/:id/edit', getTaskEdit);
+taskRouter.get('/:id/edit', restrictToLoggedIn, getTaskEdit);
 
 taskRouter.put('/:id/edit', editTask);
 
