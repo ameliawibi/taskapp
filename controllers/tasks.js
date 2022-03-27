@@ -1,7 +1,5 @@
-import "dotenv/config";
 import {pool} from "../utility/connect";
 import { validationResult } from "express-validator";
-const salt = process.env.SECRET_KEY;
 let errorMessage = [];
 let payload ={};
 

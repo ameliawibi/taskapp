@@ -7,7 +7,7 @@ import { postComment } from '../controllers/comments';
 import postLabel from '../controllers/labels';
 import {restrictToLoggedIn} from "../utility/hash";
 import {
-  taskValidator
+  taskValidator,commentValidator
 } from "../utility/validator";
 
 const taskRouter = express.Router();
@@ -26,14 +26,14 @@ taskRouter.get('/', restrictToLoggedIn, getAllTasks);
 
 taskRouter.get('/:id/edit', restrictToLoggedIn, getTaskEdit);
 
-taskRouter.put('/:id/edit',taskValidator, editTask);
+taskRouter.put('/:id/edit',taskValidator, restrictToLoggedIn,editTask);
 
 taskRouter.delete('/:id/delete', restrictToLoggedIn,deleteTask);
 
 taskRouter.put('/:taskid/move/:statusid',restrictToLoggedIn,moveTask);
 
 /// COMMENT ROUTES ///
-taskRouter.post('/:id/comment', postComment);
+taskRouter.post('/:id/comment', restrictToLoggedIn,commentValidator,postComment);
 
 /// LABEL ROUTES ///
 taskRouter.post('/label', postLabel);
