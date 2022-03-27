@@ -231,4 +231,15 @@ export const deleteTask = (req,res) => {
   .then((result) => {
     res.redirect("/task");
   })
+  .catch((error) => console.log(error.stack));
+};
+
+export const moveTask = (req,res) => {
+  const taskId = req.params.taskid
+  const statusId = req.params.statusid;
+  pool.query(`UPDATE "tasks" SET "task_status_id"=${statusId} WHERE id=${taskId}`)
+  .then((result) => {
+    res.redirect("/task");
+  })
+  .catch((error) => console.log(error.stack));
 };

@@ -1,7 +1,7 @@
 import express from 'express';
 import methodOverride from 'method-override';
 import {
-  postTask, getAllTasks, getTaskPost, getTaskEdit, editTask, deleteTask,
+  postTask, getAllTasks, getTaskPost, getTaskEdit, editTask, deleteTask, moveTask,
 } from '../controllers/tasks';
 import { postComment } from '../controllers/comments';
 import postLabel from '../controllers/labels';
@@ -29,6 +29,8 @@ taskRouter.get('/:id/edit', restrictToLoggedIn, getTaskEdit);
 taskRouter.put('/:id/edit',taskValidator, editTask);
 
 taskRouter.delete('/:id/delete', restrictToLoggedIn,deleteTask);
+
+taskRouter.put('/:taskid/move/:statusid',restrictToLoggedIn,moveTask);
 
 /// COMMENT ROUTES ///
 taskRouter.post('/:id/comment', postComment);
