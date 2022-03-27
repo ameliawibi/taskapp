@@ -28,7 +28,7 @@ taskRouter.get('/:id/edit', restrictToLoggedIn, getTaskEdit);
 
 taskRouter.put('/:id/edit',taskValidator, editTask);
 
-taskRouter.delete('/:id/delete', deleteTask);
+taskRouter.delete('/:id/delete', restrictToLoggedIn,deleteTask);
 
 /// COMMENT ROUTES ///
 taskRouter.post('/:id/comment', postComment);

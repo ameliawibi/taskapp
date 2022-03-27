@@ -79,7 +79,7 @@ export const getAllTasks = (req,res) => {
   let ejsData = {};
   let ejsLabel;
   let ejsComment;
-  let getAllQuery = 'SELECT task_statuses.status,tasks.id,tasks.due_date,tasks.name AS task_name,tasks.description,tasks.assigned_to,users.avatar AS user_avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id ORDER BY task_statuses.id';
+  let getAllQuery = 'SELECT task_statuses.status,tasks.id,tasks.due_date,tasks.name AS task_name,tasks.description,tasks.assigned_to,users.avatar AS user_avatar FROM tasks INNER JOIN task_statuses ON tasks.task_status_id=task_statuses.id INNER JOIN users ON tasks.assigned_to=users.id ORDER BY task_statuses.id ASC, tasks.id DESC';
   pool.query(getAllQuery).then((result) => {
       for (let i = 0; i < result.rows.length; i++) {
         let status = result.rows[i].status;
@@ -226,5 +226,9 @@ export const editTask = (req,res) => {
 };
 
 export const deleteTask = (req,res) => {
-  res.send('NOT IMPLEMENTED: delete single task');
+  const taskId = req.params.id;
+  pool.query(`DELETE from tasks WHERE id=${taskId}`)
+  .then((result) => {
+    res.redirect("/task");
+  })
 };
