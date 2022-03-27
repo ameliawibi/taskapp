@@ -1,8 +1,8 @@
 const ejsData =
 {
-  Done: [
+  'To do': [
     {
-      status: 'Done',
+      status: 'To do',
       id: 1,
       due_date: '05/05/2022',
       task_name: 'UX research on Onboarding workflow',
@@ -33,9 +33,9 @@ const ejsData =
       user_avatar: 'user1.jpeg'
     }
   ],
-  'To do': [
+  'Done': [
     {
-      status: 'To do',
+      status: 'Done',
       id: 4,
       due_date: '03/03/2022',
       task_name: 'Create DB model for Onboarding',
@@ -44,7 +44,7 @@ const ejsData =
       user_avatar: 'user3.jpeg'
     },
     {
-      status: 'To do',
+      status: 'Done',
       id: 5,
       due_date: '04/05/2022',
       task_name: 'Implement logic for onboarding page',
@@ -72,9 +72,11 @@ const ejsComment = [
   { count: '2', id: 1 }
 ]
 
-for (const [key, value] of Object.entries(ejsData)) {
+Object.entries(ejsData).forEach(([key, value], index) =>
+{
   console.log(key);
   console.log(value.length);
+  (index<3) ? console.log(index+2) : console.log(1);
   value.forEach(element => {
     
     ejsLabel.forEach(item => {
@@ -94,3 +96,4 @@ for (const [key, value] of Object.entries(ejsData)) {
     console.log(element.user_avatar);
   });
 }
+);
