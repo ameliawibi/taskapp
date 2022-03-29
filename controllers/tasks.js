@@ -1,7 +1,11 @@
 import {pool} from "../utility/connect";
 import { validationResult } from "express-validator";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 let errorMessage = [];
 let payload ={};
+
+dayjs.extend(relativeTime);
 
 export const getTaskPost = (req,res) => {
 
@@ -168,14 +172,19 @@ export const getTaskEdit = (req,res) => {
       ejsLabelOptions = labelList.rows;
     }
     return pool.query(
-      `SELECT * FROM comments
-INNER JOIN tasks ON comments.task_id = tasks.id
+      `SELECT * FROM tasks
+INNER JOIN comments ON comments.task_id = tasks.id
 WHERE tasks.id = ${req.params.id};`
     )
   })
   .then((commentCounter) => {
     if (commentCounter.rows) {
       ejsComment = commentCounter.rows;
+      //console.log(ejsComment);
+      ejsComment.forEach((data, index) => {
+        ejsComment[index].created_at = dayjs(data.created_at).fromNow();
+        //console.log(ejsComment[index].created_at);
+      })
     }
   let error = errorMessage;
   errorMessage = [];

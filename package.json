@@ -21,6 +21,7 @@
   "homepage": "https://github.com/rocketacademy/base-node-bootcamp#readme",
   "dependencies": {
     "cookie-parser": "^1.4.6",
+    "dayjs": "^1.11.0",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",

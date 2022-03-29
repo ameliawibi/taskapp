@@ -115,12 +115,12 @@
   <% ejsComment.forEach((data) => { %>                  
     <li class="mb-10 ml-6">
         <span class="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <img class="rounded-full shadow-lg" src="/bird.png" alt="Thomas Lean image"/>
+            <img class="rounded-full shadow-lg" src="/<%=ejsUser.filter(user => user.id === data.user_id).map(user => user.avatar) %>" alt="user avatar"/>
         </span>
         <div class="w-64 sm:w-96 md:w-120 p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
             <div class="justify-between items-center mb-3 sm:flex">
-               <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">2 hours ago</time>
-                <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">User <%= data.user_id %> commented on Task <%= data.task_id %></div>
+               <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0"><%= data.created_at %></time>
+                <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300"><%=ejsUser.filter(user => user.id === data.user_id).map(user => user.name) %> commented on Task <%= data.task_id %></div>
             </div>
             <div class="p-3 text-xs italic font-normal text-gray-500 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300"><%= data.comment %></div>
         </div>
@@ -129,6 +129,7 @@
  
     <li class="mb-10 ml-6">
         <span class="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+            <img class="rounded-full shadow-lg" src="/<%=active_user%>" alt="user avatar"/>
         </span>
         <div class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-700 dark:border-gray-600">
           <label for="comment"></label>
