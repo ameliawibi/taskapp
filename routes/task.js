@@ -7,7 +7,7 @@ import { postComment } from '../controllers/comments';
 import postLabel from '../controllers/labels';
 import {restrictToLoggedIn} from "../utility/hash";
 import {
-  taskValidator,commentValidator
+  taskValidator,commentValidator,labelValidator
 } from "../utility/validator";
 
 const taskRouter = express.Router();
@@ -36,6 +36,6 @@ taskRouter.put('/:taskid/move/:statusid',restrictToLoggedIn,moveTask);
 taskRouter.post('/:id/comment', restrictToLoggedIn,commentValidator,postComment);
 
 /// LABEL ROUTES ///
-taskRouter.post('/label', postLabel);
+taskRouter.post('/:id/label/:statusid', restrictToLoggedIn, labelValidator, postLabel);
 
 export default taskRouter;

@@ -4,6 +4,10 @@ export const commentValidator = [
   check("comment").not().isEmpty().withMessage("This field is required"),
 ];
 
+export const labelValidator = [
+  check("label").not().isEmpty().withMessage("This field is required"),
+];
+
 export const loginValidator = [
   check("email")
     .not()

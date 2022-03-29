@@ -93,7 +93,7 @@ export const getAllTasks = (req,res) => {
         else {
           ejsData[status] = [objects];
         }
-      };
+      }
       
       return pool.query(
       `SELECT tasks.id,labels.label FROM tasks INNER JOIN task_labels ON tasks.id = task_labels.task_id INNER JOIN labels ON labels.id = task_labels.label_id`
