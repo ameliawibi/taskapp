@@ -6,3 +6,5 @@
 uploads/*
 # Dependency directories
 node_modules/
+sendgrid.env
+sendgrid.envecho
