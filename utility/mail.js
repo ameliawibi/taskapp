@@ -1,7 +1,9 @@
 import sgMail from '@sendgrid/mail';
+import "dotenv/config";
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-function getPostTaskEmail (userName,taskName,taskDesc,dueDate) {
+function getPostTaskEmail (context,userName,taskName,taskDesc,dueDate) {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
 <head>
@@ -120,7 +122,7 @@ padding:10px 30px 10px 30px!important;
 <td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px;font-size:0px"><img src="https://kqyvue.stripocdn.email/content/guids/CABINET_41f43a7e420215407758003be3696ed1/images/illustration_AjF.png" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="100"></td>
 </tr>
 <tr>
-<td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-bottom:10px"><h1 style="Margin:0;line-height:46px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">Your new task</h1></td>
+<td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-bottom:10px"><h1 style="Margin:0;line-height:46px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">${context}</h1></td>
 </tr>
 <tr>
 <td align="left" class="es-m-p0r es-m-p0l" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:40px;padding-right:40px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Task name:</strong><br>${taskName}<br><strong>Task description:</strong><br>${taskDesc}<br><strong>Due date:</strong><br>${dueDate}</p></td>
@@ -169,9 +171,9 @@ function getMessage(emailParams) {
   return {
     to: emailParams.toEmail,
     from: 'amelia.wibi@omnihr.co',
-    subject: 'You received a new task',
-    text: `Hi ${emailParams.userName},you have a new task`,
-    html: getPostTaskEmail(emailParams.userName, emailParams.taskName, emailParams.taskDesc, emailParams.dueDate),
+    subject: `${emailParams.context}`,
+    text: `Hi ${emailParams.userName},${emailParams.context}`,
+    html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDesc, emailParams.dueDate),
   };
 }
 

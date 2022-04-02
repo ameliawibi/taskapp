@@ -9,7 +9,7 @@ let payload ={};
 
 dayjs.extend(relativeTime);
 
-export const getTaskPost = (req,res) => {
+export const getTaskPost = (req,res, next) => {
 
   let ejsData = {
     active_user: req.cookies.avatar,
@@ -75,6 +75,7 @@ export const postTask = (req,res) => {
       return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
       .then((userList) => {
       const emailParams = {
+        context: "You have a new task",
         toEmail: userList.rows[0].email,
         userName: userList.rows[0].name,
         taskName: task.name,
@@ -240,10 +241,23 @@ export const editTask = (req,res) => {
       const labelQuery = `INSERT INTO task_labels (task_id,label_id) VALUES ($1,$2)`
       const labelInput = [taskId,labelId];
       return pool.query(labelQuery,labelInput)
-    })}).then((finalResult) => {
+    })}).then((labelResult) => {
+      return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
+      .then((userList) => {
+      const emailParams = {
+        context: "You have an updated task",
+        toEmail: userList.rows[0].email,
+        userName: userList.rows[0].name,
+        taskName: task.name,
+        taskDesc: task.description,
+        dueDate: task.due_date,
+      }
+      sendPostTaskEmail(emailParams);
+      //console.log(emailParams);
       res.redirect("/task");
+      })
   })
-  .catch((error) => console.log(error.stack));
+  .catch((error) => console.log(error.stack)); 
 };
 
 export const deleteTask = (req,res) => {
