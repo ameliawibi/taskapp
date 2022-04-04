@@ -72,7 +72,7 @@ export const postTask = (req,res) => {
       const labelInput = [taskId,labelId];
       return pool.query(labelQuery,labelInput)
     })}).then((labelResult) => {
-      return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
+      return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)})
       .then((userList) => {
       const emailParams = {
         context: "You have a new task",
@@ -83,10 +83,8 @@ export const postTask = (req,res) => {
         dueDate: task.due_date,
       }
       sendPostTaskEmail(emailParams);
-      //console.log(emailParams);
       res.redirect("/task");
       })
-  })
   .catch((error) => console.log(error.stack)); 
 };
 
@@ -242,7 +240,7 @@ export const editTask = (req,res) => {
       const labelInput = [taskId,labelId];
       return pool.query(labelQuery,labelInput)
     })}).then((labelResult) => {
-      return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
+      return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)})
       .then((userList) => {
       const emailParams = {
         context: "You have an updated task",
@@ -256,7 +254,6 @@ export const editTask = (req,res) => {
       //console.log(emailParams);
       res.redirect("/task");
       })
-  })
   .catch((error) => console.log(error.stack)); 
 };
 

@@ -32,7 +32,6 @@ app.use((request, response, next) => {
       request.isUserLoggedIn = true;
     }
   }
-
   next();
 });
 

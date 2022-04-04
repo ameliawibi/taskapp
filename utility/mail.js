@@ -170,8 +170,11 @@ padding:10px 30px 10px 30px!important;
 function getMessage(emailParams) {
   return {
     to: emailParams.toEmail,
-    from: 'amelia.wibi@omnihr.co',
-    subject: `${emailParams.context}`,
+    from: {
+      name: 'Amelia Wibi',
+      email: 'amelia.wibi@omnihr.co',
+    },
+  subject: `${emailParams.context}`,
     text: `Hi ${emailParams.userName},${emailParams.context}`,
     html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDesc, emailParams.dueDate),
   };
