@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import taskRouter from './routes/task';
 import authRouter from './routes/userAuth';
+import quillRouter from './routes/quillTest';
 import { router } from './routes/index';
 import {getHashedCookie} from "./utility/hash";
 
@@ -38,5 +39,6 @@ app.use((request, response, next) => {
 app.use('/', router);
 app.use('/auth', authRouter);
 app.use('/task', taskRouter);
+app.use('/quill', quillRouter);
 
 app.listen(3004);
