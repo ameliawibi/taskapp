@@ -152,7 +152,7 @@
   };
 
   function decodeHtml(html) {
-    var txt = document.createElement("div");
+    var txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
   }
