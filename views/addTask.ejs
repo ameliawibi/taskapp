@@ -22,19 +22,14 @@
         <p class="errormsg"><%= error.filter(item => item.param === 'name').map(item => item.msg) %></p>
     </div>
 
-  <div class="mb-3 xl:w-96">
-    <label for="description" class="form-label inline-block mb-2 text-gray-700"
-      >Task description</label
-    >
-    <textarea
-      class="form-control input"
-      id="exampleFormControlTextarea1"
-      name="description"
-      rows="3"
-      placeholder="Enter brief description here"
-    ><%=description%></textarea>
-    <p class="errormsg"><%= error.filter(item => item.param === 'description').map(item => item.msg) %></p>
-  </div>
+  <div class="row form-group">
+      <label for="description" class="label mb-2">Task description</label>
+      <input name="description" type="hidden" />
+      <div id="editor-container"></div>
+      <p class="errormsg"><%= error.filter(item => item.param === 'description').map(item => item.msg) %></p>
+    </div>
+  
+  <br>
 
     <label for ="assigned_to" class="label">
   Assign to
@@ -132,6 +127,51 @@
 
 </div>
 </form>
+
+<!-- Include the Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script>
+  var quill = new Quill("#editor-container", {
+    modules: {
+      toolbar: [
+        ["bold", "italic", "underline"],
+        ["link", "blockquote", "code-block", "image"],
+        [{ list: "ordered" }, { list: "bullet" }],
+      ],
+    },
+    placeholder: "Compose an epic...",
+    theme: "snow",
+  });
+
+  Quill.prototype.getHTML = function () {
+    return this.container.querySelector(".ql-editor").innerHTML;
+  };
+  Quill.prototype.setHTML = function (html) {
+    this.container.querySelector(".ql-editor").innerHTML = html;
+  };
+
+  function decodeHtml(html) {
+    var txt = document.createElement("div");
+    txt.innerHTML = html;
+    return txt.value;
+  }
+  // usages
+  quill.setHTML(decodeHtml(`<%=description%>`));
+
+  var form = document.querySelector("form");
+  form.onsubmit = function () {
+    // Populate hidden form on submit
+    var description = document.querySelector("input[name=description]");
+    description.value = quill.root.innerHTML;
+
+    console.log("Submitted", $(form).serialize(), $(form).serializeArray());
+
+    // No back end to actually submit to!
+    alert("Open the console to see the submit data!");
+    return false;
+  };
+</script>
 
   </body>
 </html>
