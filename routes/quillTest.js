@@ -11,8 +11,11 @@ quillRouter.get('/', (req, res) => {
 });
 
 quillRouter.post('/', (req,res) => {
+  //console.log(req.body);
   let ejsData = req.body;
-  console.log(ejsData);
+  ejsData.about = JSON.parse(req.body.about);
+  //console.log(ejsData);
+  //console.log(JSON.stringify(ejsData.about));
   res.render("quill", ejsData)
 })
 
