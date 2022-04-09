@@ -16,7 +16,7 @@ export const getTaskPost = (req,res, next) => {
     error: errorMessage,
     due_date : "due_date" in payload ? payload.due_date : "",
     name: "name" in payload ? payload.name : "",
-    description: "description" in payload ? payload.description : "",
+    description: "description" in payload ? JSON.parse(payload.description) : "",
     assigned_to: "assigned_to" in payload ? payload.assigned_to : "",
     label_id: "label_id" in payload ? payload.label_id : [],
     task_status_id: req.params.statusid,
@@ -145,7 +145,7 @@ export const getTaskEdit = (req,res) => {
     task_status_id: "task_status_id" in payload ? payload.task_status_id : result.rows[0].task_status_id,
     due_date: "due_date" in payload ? payload.due_date : result.rows[0].due_date,
     name: "name" in payload ? payload.name : result.rows[0].name,
-    description: "description" in payload ? payload.description : result.rows[0].description,
+    description: "description" in payload ? JSON.parse(payload.description) : JSON.parse(result.rows[0].description),
     assigned_to: "assigned_to" in payload ? payload.assigned_to : result.rows[0].assigned_to,
   };
   //console.log(ejsData);
@@ -209,6 +209,7 @@ WHERE tasks.id = ${req.params.id};`
 
 export const editTask = (req,res) => {
   payload = req.body;
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //store error message and session data
