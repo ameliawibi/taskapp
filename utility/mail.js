@@ -1,4 +1,6 @@
 import sgMail from '@sendgrid/mail';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
+
 import "dotenv/config";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -125,7 +127,7 @@ padding:10px 30px 10px 30px!important;
 <td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-bottom:10px"><h1 style="Margin:0;line-height:46px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">${context}</h1></td>
 </tr>
 <tr>
-<td align="left" class="es-m-p0r es-m-p0l" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:40px;padding-right:40px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Task name:</strong><br>${taskName}<br><strong>Task description:</strong><br>${taskDesc}<br><strong>Due date:</strong><br>${dueDate}</p></td>
+<td align="left" class="es-m-p0r es-m-p0l" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:40px;padding-right:40px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px"><strong>Task name:</strong><br>${taskName}<br><strong>Task description:</strong><div>${taskDesc}</div><strong>Due date:</strong><br>${dueDate}</p></td>
 </tr>
 <tr>
 <td align="center" style="padding:0;Margin:0;padding-bottom:5px;padding-top:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">If you did not register with us, please disregard this email.</p></td>
@@ -167,7 +169,14 @@ padding:10px 30px 10px 30px!important;
 </html>`
 }
 
+
 function getMessage(emailParams) {
+  //console.log(emailParams);
+  var deltaOps = JSON.parse(emailParams.taskDesc).ops;
+  var cfg = {};
+  var converter = new QuillDeltaToHtmlConverter(deltaOps, cfg);
+  emailParams.taskDescHtml = converter.convert();
+  //console.log(emailParams.taskDescHtml);
   return {
     to: emailParams.toEmail,
     from: {
@@ -176,7 +185,7 @@ function getMessage(emailParams) {
     },
   subject: `${emailParams.context}`,
     text: `Hi ${emailParams.userName},${emailParams.context}`,
-    html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDesc, emailParams.dueDate),
+    html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDescHtml, emailParams.dueDate),
   };
 }
 
