@@ -3,16 +3,14 @@ import {pool} from "./connect";
 export const getHashString = (input) => {
   const shaObj = new jsSHA("SHA-512", "TEXT", { encoding: "UTF8" });
   shaObj.update(input);
-  const hash = shaObj.getHash("HEX");
-  return hash;
+  return shaObj.getHash("HEX");
 };
 
 export const getHashedCookie = (input, salt) => {
   const shaObj = new jsSHA("SHA-512", "TEXT", { encoding: "UTF8" });
   const unhashedCookieString = `${input}-${salt}`;
   shaObj.update(unhashedCookieString);
-  const hashedCookieString = shaObj.getHash("HEX");
-  return hashedCookieString;
+  return shaObj.getHash("HEX");
 };
 
 export const restrictToLoggedIn = (request, response, next) => {
@@ -39,7 +37,7 @@ export const restrictToLoggedIn = (request, response, next) => {
 
         // go to the route callback.
         next();
-      }).catch(error => {
+      }).catch(_error => {
         response.redirect('/auth/login');
       });
   }

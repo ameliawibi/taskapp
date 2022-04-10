@@ -19,7 +19,7 @@ app.use(express.static('uploads'));
 app.use(express.static('public'));
 
 const salt = process.env.SECRET_KEY;
-app.use((request, response, next) => {
+app.use((request, _response, next) => {
   // set the default value
   request.isUserLoggedIn = false;
 
