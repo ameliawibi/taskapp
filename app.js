@@ -6,8 +6,14 @@ import authRouter from './routes/userAuth';
 import quillRouter from './routes/quillTest';
 import { router } from './routes/index';
 import {getHashedCookie} from "./utility/hash";
+import chatRouter from './routes/chatRouter';
+import { createServer } from "http";
+import { Server } from "socket.io";
+import MessageService from './service/message';
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 
 // Set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -40,5 +46,27 @@ app.use('/', router);
 app.use('/auth', authRouter);
 app.use('/task', taskRouter);
 app.use('/quill', quillRouter);
+app.use('/chat',chatRouter);
 
-app.listen(3004);
+
+const messageService = new MessageService();
+// server-side
+io.on('connection', (socket) => {
+  console.log('a user is connected');
+  
+  socket.on('chat message', (msg) => {
+    //const sender = data[1];
+    //const message = data[0];
+    //const room = data[2];
+    console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+httpServer.listen(3004,() => {
+  console.log('listening on *:3004');
+});

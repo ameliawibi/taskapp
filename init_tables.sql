@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS labels CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS tasks CASCADE;
 DROP TABLE IF EXISTS task_statuses CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users (
@@ -11,6 +12,16 @@ CREATE TABLE users (
   name TEXT,
   email TEXT,
   password TEXT
+);
+
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INT,
+  message VARCHAR,
+  CONSTRAINT fk_senderid_id
+  FOREIGN KEY (sender_id)
+  REFERENCES users(id)
+  ON DELETE CASCADE
 );
 
 CREATE TABLE task_statuses (
