@@ -171,12 +171,11 @@ padding:10px 30px 10px 30px!important;
 
 
 function getMessage(emailParams) {
-  //console.log(emailParams);
   var deltaOps = JSON.parse(emailParams.taskDesc).ops;
   var cfg = {};
   var converter = new QuillDeltaToHtmlConverter(deltaOps, cfg);
   emailParams.taskDescHtml = converter.convert();
-  //console.log(emailParams.taskDescHtml);
+  
   return {
     to: emailParams.toEmail,
     from: {

@@ -4,9 +4,9 @@ let errorMessage = [];
 
 const postLabel = (req, res) => {
   const task_id = req.params.id;
-  //console.log(task_id);
+  
   const status_id = req.params.statusid;
-  //console.log(status_id);
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     errorMessage = errors.errors;

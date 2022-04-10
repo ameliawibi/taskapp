@@ -51,7 +51,7 @@ export const postSignup = (req, res) => {
   pool.query(
     `INSERT INTO users (avatar,name,email,password) VALUES ($1, $2, $3, $4)`,
     values,
-    (error, queryResult) => {
+    (error, _queryResult) => {
       if (error) {
         console.log("Error executing query", error.stack);
         return res.status(503).send("Service is unavailable");
@@ -86,7 +86,6 @@ export const postLogin = (req, res) => {
     return;
   }
   const values = [req.body.email.toLowerCase()];
-  //console.log(values);
   pool.query(
     "SELECT * from users WHERE email=$1",
     values,
@@ -126,7 +125,7 @@ export const postLogin = (req, res) => {
   );
 };
 
-export const getLogout = (req, res) => {
+export const getLogout = (_req, res) => {
   res.clearCookie("loggedInHash");
   res.clearCookie("userID");
   res.clearCookie("avatar");

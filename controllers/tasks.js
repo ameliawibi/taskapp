@@ -9,7 +9,7 @@ let payload ={};
 
 dayjs.extend(relativeTime);
 
-export const getTaskPost = (req,res, next) => {
+export const getTaskPost = (req,res, _next) => {
 
   let ejsData = {
     active_user: req.cookies.avatar,
@@ -32,19 +32,18 @@ export const getTaskPost = (req,res, next) => {
    if (labelList.rows) {
      ejsData.label_options = labelList.rows;
    }
-   //console.log(ejsData);
    errorMessage = [];
    payload = {};
-   //res.send('NOT IMPLEMENTED: render add new task form');
+   
    res.render('addTask',ejsData);
   })
   .catch((error) => console.log(error.stack));  
 };
 
 export const postTask = (req,res) => {
-  //console.log(req.body);
+  
   payload = req.body;
-  //console.log(payload);
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //store error message and session data
@@ -71,7 +70,7 @@ export const postTask = (req,res) => {
       const labelQuery = 'INSERT INTO task_labels (task_id,label_id) VALUES ($1,$2)'
       const labelInput = [taskId,labelId];
       return pool.query(labelQuery,labelInput)
-    })}).then((labelResult) => {
+    })}).then((_labelResult) => {
       return pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)})
       .then((userList) => {
       const emailParams = {
@@ -148,7 +147,6 @@ export const getTaskEdit = (req,res) => {
     description: "description" in payload ? JSON.parse(payload.description) : JSON.parse(result.rows[0].description),
     assigned_to: "assigned_to" in payload ? payload.assigned_to : result.rows[0].assigned_to,
   };
-  //console.log(ejsData);
       return pool.query(
       `SELECT labels.id,labels.label FROM tasks INNER JOIN task_labels ON tasks.id = task_labels.task_id INNER JOIN labels ON labels.id = task_labels.label_id WHERE tasks.id = ${req.params.id}`
     );
@@ -165,7 +163,6 @@ export const getTaskEdit = (req,res) => {
       })
     }
     payload = {};
-    //console.log(ejsLabel);
     return pool.query('SELECT * FROM users')
   })
   .then((userList) => {
@@ -193,15 +190,14 @@ WHERE tasks.id = ${req.params.id};`
   .then((commentCounter) => {
     if (commentCounter.rows) {
       ejsComment = commentCounter.rows;
-      //console.log(ejsComment);
+      
       ejsComment.forEach((data, index) => {
         ejsComment[index].created_at = dayjs(data.created_at).fromNow();
-        //console.log(ejsComment[index].created_at);
+        
       })
     }
   let error = errorMessage;
   errorMessage = [];
-  //res.json({'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel, 'ejsUser': ejsUser, 'ejsStatusOptions': ejsStatusOptions,'ejsLabelOptions': ejsLabelOptions, 'ejsComment':ejsComment, 'error': error});
   res.render('editTask', {'ejsData':ejsData, 'active_user': req.cookies.avatar, 'ejsLabel':ejsLabel, 'ejsUser': ejsUser, 'ejsStatusOptions': ejsStatusOptions,'ejsLabelOptions': ejsLabelOptions, 'ejsComment':ejsComment, 'error': error});
   })
   .catch((err) => console.log(err.stack));
@@ -230,7 +226,7 @@ export const editTask = (req,res) => {
   const taskQuery = `UPDATE "tasks" SET "due_date"=$1, "name"=$2, "description"=$3, "assigned_to" =$4 ,"task_status_id"=$5 WHERE id=${req.params.id} RETURNING ID`;
   
   pool.query(`DELETE from task_labels WHERE task_id=${req.params.id}`)
-  .then((deleteRes) => {
+  .then((_deleteRes) => {
     return pool.query(taskQuery,taskInput)
   })
   .then((result) => {
@@ -252,7 +248,6 @@ export const editTask = (req,res) => {
         dueDate: task.due_date,
       }
       sendPostTaskEmail(emailParams);
-      //console.log(emailParams);
       res.redirect("/task");
       })
   .catch((error) => console.log(error.stack)); 
@@ -261,7 +256,7 @@ export const editTask = (req,res) => {
 export const deleteTask = (req,res) => {
   const taskId = req.params.id;
   pool.query(`DELETE from tasks WHERE id=${taskId}`)
-  .then((result) => {
+  .then((_result) => {
     res.redirect("/task");
   })
   .catch((error) => console.log(error.stack));
@@ -271,7 +266,7 @@ export const moveTask = (req,res) => {
   const taskId = req.params.taskid
   const statusId = req.params.statusid;
   pool.query(`UPDATE "tasks" SET "task_status_id"=${statusId} WHERE id=${taskId}`)
-  .then((result) => {
+  .then((_result) => {
     res.redirect("/task");
   })
   .catch((error) => console.log(error.stack));
