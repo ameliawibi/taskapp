@@ -54,12 +54,13 @@ const messageService = new MessageService();
 io.on('connection', (socket) => {
   console.log('a user is connected');
   
-  socket.on('chat message', (msg) => {
-    //const sender = data[1];
-    //const message = data[0];
-    //const room = data[2];
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
+  socket.on('chat message', (data) => {
+    console.log('message: ' + data[0]);
+    const message = data[0];
+    const sender_id = data[2];
+    const sender_avatar = data[1];
+    //await messageService.createMessage(sender_id, message);
+    io.emit('chat message', data);
   });
 
   socket.on('disconnect', () => {
