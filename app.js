@@ -9,7 +9,7 @@ import {getHashedCookie} from "./utility/hash";
 import chatRouter from './routes/chatRouter';
 import { createServer } from "http";
 import { Server } from "socket.io";
-import MessageService from './service/message';
+import MessageService from './service/MessageService';
 
 const app = express();
 const httpServer = createServer(app);
@@ -53,13 +53,16 @@ const messageService = new MessageService();
 // server-side
 io.on('connection', (socket) => {
   console.log('a user is connected');
-  
-  socket.on('chat message', (data) => {
-    console.log('message: ' + data[0]);
+
+  socket.on('loadchat', async () => {
+  let chatHistory = await messageService.getMessage();
+    io.emit('loadchat', chatHistory);
+  });
+
+  socket.on('chat message', async (data) => {
     const message = data[0];
     const sender_id = data[2];
-    const sender_avatar = data[1];
-    //await messageService.createMessage(sender_id, message);
+    await messageService.createMessage(sender_id,message);
     io.emit('chat message', data);
   });
 

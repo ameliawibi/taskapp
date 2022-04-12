@@ -18,10 +18,10 @@ function chatApp() {
   const socket = io();
   // client-side
   const messages = document.getElementById('messages');
-  console.log(messages);
   const form = document.getElementById('form');
   const input = document.getElementById('input');
 
+  
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (input.value) {
@@ -29,8 +29,36 @@ function chatApp() {
       input.value = '';
     }
   });
-
+  socket.emit('loadchat');
   //to do: display chat history
+  socket.on('loadchat', function (chatHistory) {
+    chatHistory.forEach((data) => {
+    const senderID = Number(getCookie("userID"));
+    const chatMessageWrapper = document.createElement('div');
+    const chatMessageDiv = document.createElement('div');
+    const chatMessageText = document.createElement('span');
+    const chatMessageSender = document.createElement('img');
+    if (senderID == data.id) {
+    chatMessageWrapper.className = "flex items-end justify-end";
+    chatMessageDiv.className = "flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end";
+    chatMessageText.className = "px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white";
+    chatMessageSender.className = "w-6 h-6 rounded-full order-2";
+    }
+    if (senderID !== data.id) {
+    chatMessageWrapper.className = "flex items-end";
+    chatMessageDiv.className = "flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start";
+    chatMessageText.className = "px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600";
+    chatMessageSender.className = "w-6 h-6 rounded-full order-1";
+    }
+    chatMessageSender.src = data.avatar;
+    chatMessageText.textContent = data.message;
+
+    chatMessageDiv.appendChild(chatMessageText);
+    chatMessageWrapper.appendChild(chatMessageDiv);
+    chatMessageWrapper.appendChild(chatMessageSender);
+    messages.appendChild(chatMessageWrapper);
+    });
+  });
 
   //to do: different style isMessageFromUser
   socket.on('chat message', function(data) {
@@ -61,6 +89,6 @@ function chatApp() {
   });
 
   socket.on("connect", () => {
-    console.log("test connection");
+    console.log("socket connected");
   });
 }
