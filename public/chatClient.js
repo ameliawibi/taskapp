@@ -20,18 +20,11 @@ function chatApp() {
   const messages = document.getElementById('messages');
   const form = document.getElementById('form');
   const input = document.getElementById('input');
-
-  
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (input.value) {
-      socket.emit('chat message', [input.value,getCookie("avatar"),getCookie("userID")]);
-      input.value = '';
-    }
-  });
-  socket.emit('loadchat');
+    
+  socket.emit("subscribe");
   //to do: display chat history
-  socket.on('loadchat', function (chatHistory) {
+  socket.once('joinRoom', function (chatHistory) {
+    console.log('joinRoom happened');
     chatHistory.forEach((data) => {
     const senderID = Number(getCookie("userID"));
     const chatMessageWrapper = document.createElement('div');
@@ -59,6 +52,15 @@ function chatApp() {
     messages.appendChild(chatMessageWrapper);
     });
   });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+      socket.emit('chat message', [input.value,getCookie("avatar"),getCookie("userID")]);
+      input.value = '';
+    }
+  });
+
 
   //to do: different style isMessageFromUser
   socket.on('chat message', function(data) {
