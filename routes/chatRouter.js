@@ -1,8 +1,9 @@
 import express from "express";
+import {restrictToLoggedIn} from "../utility/hash";
 
 const chatRouter = express.Router();
 
-chatRouter.get("/", (req, res) => {
+chatRouter.get("/", restrictToLoggedIn, (req, res) => {
   const ejsData = {
     active_user :req.cookies.avatar
   }
