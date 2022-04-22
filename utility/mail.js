@@ -5,7 +5,7 @@ import "dotenv/config";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-function getPostTaskEmail (context,userName,taskName,taskDesc,dueDate) {
+function getPostTaskEmail (context,userName,taskName,taskDesc,dueDate,hyperLink) {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
 <head>
@@ -133,7 +133,7 @@ padding:10px 30px 10px 30px!important;
 <td align="center" style="padding:0;Margin:0;padding-bottom:5px;padding-top:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">If you did not register with us, please disregard this email.</p></td>
 </tr>
 <tr>
-<td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#5C68E2;border-width:0px;display:inline-block;border-radius:6px;width:auto"><a href="/task" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;border-style:solid;border-color:#5C68E2;border-width:10px 30px 10px 30px;display:inline-block;background:#5C68E2;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;border-left-width:30px;border-right-width:30px">Login to view task</a></span></td>
+<td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:#5C68E2;border-width:0px;display:inline-block;border-radius:6px;width:auto"><a href="${hyperLink}" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;border-style:solid;border-color:#5C68E2;border-width:10px 30px 10px 30px;display:inline-block;background:#5C68E2;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;border-left-width:30px;border-right-width:30px">Login to view task</a></span></td>
 </tr>
 </table></td>
 </tr>
@@ -184,7 +184,7 @@ function getMessage(emailParams) {
     },
   subject: `${emailParams.context}`,
     text: `Hi ${emailParams.userName},${emailParams.context}`,
-    html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDescHtml, emailParams.dueDate),
+    html: getPostTaskEmail(emailParams.context,emailParams.userName, emailParams.taskName, emailParams.taskDescHtml, emailParams.dueDate,emailParams.hyperLink),
   };
 }
 

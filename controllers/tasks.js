@@ -6,8 +6,15 @@ import {sendPostTaskEmail} from "../utility/mail";
 
 let errorMessage = [];
 let payload ={};
+let hyperLink;
 
 dayjs.extend(relativeTime);
+
+if (process.env.ENV === "PRODUCTION") {
+  hyperLink = "https://ameliawibi.com/task"
+} else {
+  hyperLink = "http://localhost:3004/task"
+}
 
 export const getTaskPost = (req,res, _next) => {
 
@@ -80,6 +87,7 @@ export const postTask = (req,res) => {
         taskName: task.name,
         taskDesc: task.description,
         dueDate: task.due_date,
+        hyperLink : hyperLink,
       }
       sendPostTaskEmail(emailParams);
       res.redirect("/task");
@@ -246,6 +254,7 @@ export const editTask = (req,res) => {
         taskName: task.name,
         taskDesc: task.description,
         dueDate: task.due_date,
+        hyperLink: hyperLink,
       }
       sendPostTaskEmail(emailParams);
       res.redirect("/task");
