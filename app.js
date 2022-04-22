@@ -17,7 +17,8 @@ const io = new Server(httpServer);
 
 // Set the view engine to ejs
 app.set('view engine', 'ejs');
-
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 app.use(cookieParser());
 app.use(fileUpload());
 // serve static files
