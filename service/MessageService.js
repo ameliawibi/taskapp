@@ -1,11 +1,25 @@
 import {pool} from "../utility/connect";
+import model from "../src/models";
 
 class MessageService {
   constructor() {
-    this.pool = pool;
+    this.model = model;
   }
 
   async createMessage(sender_id, message) {
+    try {
+      const resp = await model.Message.create({
+        sender_id,
+        message,
+      });
+      console.log(resp);
+      return resp === 0 ? null : resp;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async createMessageOld(sender_id, message) {
     try {
       const resp = await pool.query(
         "INSERT INTO messages (sender_id, message) VALUES ($1, $2) RETURNING *",

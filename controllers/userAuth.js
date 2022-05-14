@@ -3,6 +3,7 @@ import "dotenv/config";
 import { validationResult } from "express-validator";
 import {getHashString, getHashedCookie} from "../utility/hash";
 import {pool} from "../utility/connect";
+import model from "../src/models";
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.resolve();
@@ -21,7 +22,50 @@ export const getSignup = (req, res) => {
   res.render('signup', ejsData);
 };
 
-export const postSignup = (req, res) => {
+export async function postSignup (req,res,next) {
+  try{
+  if( req.isUserLoggedIn === true ){
+      res.redirect('/');
+      return;
+    }
+  const errors = validationResult(req);
+  if (!errors.isEmpty() || !req.files || Object.keys(req.files).length === 0) {
+    //store error message and session data
+    errorMessage = errors.errors;
+    console.log(errorMessage);
+    console.log(req.files);
+    res.redirect("/auth/signup");
+    return;
+  }
+
+  const hashedPassword = getHashString(req.body.password);
+  const { avatar } = req.files;
+  const uploadPath = `${__dirname}/uploads/${avatar.name}`;
+
+  avatar.mv(uploadPath, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+  });
+
+  await model.User.create({
+        avatar: avatar.name,
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword,
+      });
+
+  return res.status(201).send({ message: "Account created successfully" });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send({
+        message:
+          "Could not perform operation at this time, kindly try again later.",
+      });
+    }
+}
+
+/*export const postSignup = (req, res) => {
   if( req.isUserLoggedIn === true ){
       res.redirect('/');
       return;
@@ -60,6 +104,7 @@ export const postSignup = (req, res) => {
     }
   );
 };
+*/
 
 export const getLogin = (req, res) => {
   if( req.isUserLoggedIn === true ){
