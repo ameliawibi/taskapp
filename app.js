@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
   socket.on("subscribe", async () => {
 
     let chatHistory = await messageService.getMessage();
-
+    //console.log(chatHistory);
     socket.join(chatroom);
     console.log("a user has joined our room: " + chatroom);
 

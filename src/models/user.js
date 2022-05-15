@@ -7,7 +7,7 @@ export default (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.Message, {as: 'messages', foreignKey:'sender_id'})
+      User.hasMany(models.Message, {foreignKey:'sender_id'})
     }
   }
   User.init({
