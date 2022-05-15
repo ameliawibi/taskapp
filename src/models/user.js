@@ -9,7 +9,10 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Message, {foreignKey:'sender_id'});
       User.hasMany(models.Task,{
-        foreign_key: 'assigned_to'
+        foreignKey: 'assigned_to'
+      });
+      User.hasMany(models.Comment,{
+        foreignKey: 'user_id'
       });
     }
   }

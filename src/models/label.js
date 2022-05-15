@@ -1,24 +1,22 @@
 import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
-  class TaskStatus extends Model {
+  class Label extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TaskStatus.hasMany(models.Task, {
-        foreignKey: 'task_status_id'
-      });
+      Label.belongsToMany(models.Task, { through: 'task_labels' });
     }
   }
-  TaskStatus.init({
-    status: DataTypes.STRING
+  Label.init({
+    label: DataTypes.STRING
   }, {
     sequelize,
     timestamps: false,
-    modelName: 'TaskStatus',
-    tableName: 'task_statuses',
+    modelName: 'Label',
+    tableName: 'labels',
   });
-  return TaskStatus;
+  return Label;
 };
