@@ -1,8 +1,9 @@
-import {pool} from "../utility/connect";
+import model from "../src/models";
 import { validationResult } from "express-validator";
 let errorMessage = [];
 
-const postLabel = (req, res) => {
+export default async function postLabel (req, res) {
+  try{
   const task_id = req.params.id;
   
   const status_id = req.params.statusid;
@@ -13,21 +14,22 @@ const postLabel = (req, res) => {
     res.redirect("/note");
     return;
   }
-
-  const labelData = [req.body.label];
-  const labelQuery = `INSERT INTO labels (label) VALUES ($1)`;
-  pool.query(labelQuery, labelData)
-  .then( (result) => {
-    if (result) {
-      if (task_id && status_id == 0) {
-      res.redirect(`/task/${task_id}/edit`);
-    }
-    if (status_id && task_id == 0) {
-      res.redirect(`/task/add/${status_id}`); 
-    }
+  await model.Label.create({
+        label: req.body.label,
+      });
+    
+  if (task_id && status_id == 0) {
+  res.redirect(`/task/${task_id}/edit`);
   }
-  })
-  .catch((error) => console.log(error.stack))
-};
-
-export default postLabel;
+  if (status_id && task_id == 0) {
+    res.redirect(`/task/add/${status_id}`); 
+  }
+  }
+  catch (e) {
+        console.log(e);
+        return res.status(500).send({
+          message:
+            "Could not perform operation at this time, kindly try again later.",
+        });
+      }
+  }

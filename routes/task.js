@@ -3,7 +3,7 @@ import methodOverride from 'method-override';
 import {
   postTask, getAllTasks, getTaskPost, getTaskEdit, editTask, deleteTask, moveTask,
 } from '../controllers/tasks';
-import { postComment } from '../controllers/comments';
+import postComment from '../controllers/comments';
 import postLabel from '../controllers/labels';
 import {restrictToLoggedIn} from "../utility/hash";
 import {

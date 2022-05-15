@@ -1,8 +1,9 @@
-import {pool} from "../utility/connect";
+import model from "../src/models";
 import { validationResult } from "express-validator";
 let errorMessage = [];
 
-export const postComment = (req, res) => {
+export default async function postComment (req, res) {
+  try{
   const task_id = req.params.id;
   const user_id = req.cookies.userID;
 
@@ -13,15 +14,17 @@ export const postComment = (req, res) => {
     return;
   }
 
-  const commentData = [req.body.comment, Number(task_id), Number(user_id)];
-  const commentQuery = `INSERT INTO comments (comment,task_id,user_id) VALUES($1,$2,$3)`;
-
-  pool.query(commentQuery, commentData)
-  .then( (result) => {
-    if (result) {
-      // this is the output
-      res.redirect(`/task/${task_id}/edit`);
+  await model.Comment.create({
+        comment: req.body.comment,
+        task_id: Number(task_id),
+        user_id: Number(user_id),
+      });
+  return res.redirect(`/task/${task_id}/edit`);
+  } catch (e) {
+      console.log(e);
+      return res.status(500).send({
+        message:
+          "Could not perform operation at this time, kindly try again later.",
+      });
     }
-  })
-  .catch((error) => console.log(error.stack))
-};
+}
