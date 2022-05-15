@@ -16,7 +16,9 @@ export default (sequelize, DataTypes) => {
       references: {
         model: 'users',
         key: 'id',
-      }
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
     },
     message: DataTypes.STRING
   }, {

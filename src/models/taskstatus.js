@@ -1,28 +1,24 @@
 import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
-  class User extends Model {
+  class TaskStatus extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.Message, {foreignKey:'sender_id'});
-      User.hasMany(models.Task,{
-        foreign_key: 'assigned_to'
+      TaskStatus.belongsTo(models.Task, {
+        foreign_key: 'task_status_id'
       });
     }
   }
-  User.init({
-    name: DataTypes.STRING,
-    avatar: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+  TaskStatus.init({
+    status: DataTypes.STRING
   }, {
     sequelize,
     timestamps: false,
-    modelName: 'User',
-    tableName: 'users',
+    modelName: 'TaskStatus',
+    tableName: 'task_statuses',
   });
-  return User;
+  return TaskStatus;
 };

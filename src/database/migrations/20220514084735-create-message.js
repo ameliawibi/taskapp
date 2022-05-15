@@ -1,6 +1,5 @@
-'use strict';
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export default {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('messages', {
       id: {
         allowNull: false,
@@ -13,22 +12,16 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id',
-        }
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
       },
       message: {
         type: Sequelize.STRING
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
     });
   },
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('messages');
   }
 };
