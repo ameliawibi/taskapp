@@ -8,7 +8,7 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       Task.belongsTo(models.User, {
-        foreign_key: 'assigned_to'
+        foreignKey: 'assigned_to'
       });
       Task.belongsTo(models.TaskStatus, {
         foreignKey: 'task_status_id'
@@ -16,7 +16,10 @@ export default (sequelize, DataTypes) => {
       Task.hasMany(models.Comment, {
         foreignKey: 'task_id'
       });
-      Task.belongsToMany(models.Label, { through: 'task_labels' });
+      Task.belongsToMany(models.Label, { through: models.TaskLabel, foreignKey: 'task_id'});
+      Task.hasMany(models.TaskLabel,{
+        foreignKey: 'task_id'
+      });
     }
   }
   Task.init({

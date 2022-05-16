@@ -1,4 +1,5 @@
 import {pool} from "../utility/connect";
+import model from "../src/models";
 import { validationResult } from "express-validator";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -16,8 +17,8 @@ if (process.env.ENV === "PRODUCTION") {
   hyperLink = "http://localhost:3004/task"
 }
 
-export const getTaskPost = (req,res, _next) => {
-
+export async function getTaskPost (req,res, _next) {
+  try{
   let ejsData = {
     active_user: req.cookies.avatar,
     error: errorMessage,
@@ -29,25 +30,102 @@ export const getTaskPost = (req,res, _next) => {
     task_status_id: req.params.statusid,
   };
 
-
-  pool.query('SELECT * FROM users').then((userList)  => {
-  if (userList.rows) {
-    ejsData.assigned_to_options = userList.rows;
+  const users = await model.User.findAll();
+  const usersData = users
+    .map((Item) => ({...Item.dataValues}))
+  if (usersData.length !== 0) {
+    ejsData.assigned_to_options = usersData;
   }
-    return pool.query('SELECT * from labels')
-     }).then((labelList) => {
-   if (labelList.rows) {
-     ejsData.label_options = labelList.rows;
-   }
+  const labels = await model.Label.findAll();
+  const labelsData = labels
+    .map((Item) => ({...Item.dataValues}))
+  if (labelsData.length !== 0) {
+    ejsData.label_options = labelsData;
+  }
+
    errorMessage = [];
    payload = {};
    
-   res.render('addTask',ejsData);
-  })
-  .catch((error) => console.log(error.stack));  
-};
+   return res.render('addTask',ejsData);
+  } catch (err) {
+      console.error(err);
+    }
+}
 
-export const postTask = (req,res) => {
+export async function postTask (req,res) {
+  
+  payload = req.body;
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    //store error message and session data
+    errorMessage = errors.errors;
+    res.redirect(`/task/add/${req.params.statusid}`);
+    return;
+  }
+  
+  const task = req.body;
+
+  const labelArray = task.label_id;
+  let labelInput = [];
+  labelArray.forEach((labelId) => {
+     labelInput.push({"label": labelId});
+  });
+  console.log(labelInput);
+
+  const labelRow = await model.Label.findAll({
+    where: {
+      label: 'Management',
+    }
+  });
+  console.log(labelRow);
+
+  if (labelRow.length !==0) {
+    const newTask = await model.Task.create({
+    due_date: task.due_date,
+    name: task.name,
+    description: task.description,
+    assigned_to: Number(task.assigned_to),
+    task_status_id: req.params.statusid,
+    });
+
+    await newTask.addLabel(labelRow, {through: model.TaskLabel});
+  } else {
+    const newTask = await model.Task.create({
+    due_date: task.due_date,
+    name: task.name,
+    description: task.description,
+    assigned_to: Number(task.assigned_to),
+    task_status_id: req.params.statusid,
+    Labels: [
+      {label: 'ABC'},
+      {label: 'DEF'}]
+    }
+    , {
+    include: [
+      model.Label,
+    ] 
+  });
+  }
+
+  pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
+      .then((userList) => {
+      const emailParams = {
+        context: "You have a new task",
+        toEmail: userList.rows[0].email,
+        userName: userList.rows[0].name,
+        taskName: task.name,
+        taskDesc: task.description,
+        dueDate: task.due_date,
+        hyperLink : hyperLink,
+      }
+      sendPostTaskEmail(emailParams);
+      res.redirect("/task");
+      })
+  .catch((error) => console.log(error.stack)); 
+}
+
+export const postTaskOld = (req,res) => {
   
   payload = req.body;
   
@@ -68,6 +146,7 @@ export const postTask = (req,res) => {
     Number(task.assigned_to),
     Number(req.params.statusid),
   ];
+
   const taskQuery = 'INSERT INTO tasks (due_date,name,description,assigned_to,task_status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
 
   pool.query(taskQuery,taskInput).then((result) => {
