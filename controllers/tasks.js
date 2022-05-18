@@ -53,7 +53,7 @@ export async function getTaskPost (req,res, _next) {
 }
 
 export async function postTask (req,res) {
-  
+  try{
   payload = req.body;
   
   const errors = validationResult(req);
@@ -67,48 +67,45 @@ export async function postTask (req,res) {
   const task = req.body;
 
   const labelArray = task.label_id;
-  let labelInput = [];
-  labelArray.forEach((labelId) => {
-     labelInput.push({"label": labelId});
-  });
-  console.log(labelInput);
+  //console.log(labelArray);
 
+  //findall labels where the id:1 or id:2
   const labelRow = await model.Label.findAll({
     where: {
-      label: 'Management',
+      id: labelArray
     }
   });
-  console.log(labelRow);
+  //console.log(labelRow);
 
-  if (labelRow.length !==0) {
-    const newTask = await model.Task.create({
-    due_date: task.due_date,
-    name: task.name,
-    description: task.description,
-    assigned_to: Number(task.assigned_to),
-    task_status_id: req.params.statusid,
-    });
-
-    await newTask.addLabel(labelRow, {through: model.TaskLabel});
-  } else {
-    const newTask = await model.Task.create({
-    due_date: task.due_date,
-    name: task.name,
-    description: task.description,
-    assigned_to: Number(task.assigned_to),
-    task_status_id: req.params.statusid,
-    Labels: [
-      {label: 'ABC'},
-      {label: 'DEF'}]
-    }
-    , {
-    include: [
-      model.Label,
-    ] 
+  const newTask = await model.Task.create({
+  due_date: task.due_date,
+  name: task.name,
+  description: task.description,
+  assigned_to: Number(task.assigned_to),
+  task_status_id: req.params.statusid,
   });
-  }
 
-  pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
+  await newTask.addLabels(labelRow, {through: model.TaskLabel});
+  
+
+  const userList = await model.User.findByPk(Number(task.assigned_to));
+  //console.log(userList);
+  const emailParams = {
+        context: "You have a new task",
+        toEmail: userList.email,
+        userName: userList.name,
+        taskName: task.name,
+        taskDesc: task.description,
+        dueDate: task.due_date,
+        hyperLink : hyperLink,
+      }
+  sendPostTaskEmail(emailParams);
+  res.redirect("/task");
+} catch (err) {
+      console.error(err);
+    }
+
+  /*pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
       .then((userList) => {
       const emailParams = {
         context: "You have a new task",
@@ -122,7 +119,7 @@ export async function postTask (req,res) {
       sendPostTaskEmail(emailParams);
       res.redirect("/task");
       })
-  .catch((error) => console.log(error.stack)); 
+  .catch((error) => console.log(error.stack)); */
 }
 
 export const postTaskOld = (req,res) => {
