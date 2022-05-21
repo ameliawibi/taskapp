@@ -9,7 +9,7 @@ import {getHashedCookie} from "./utility/hash";
 import chatRouter from './routes/chatRouter';
 import { createServer } from "http";
 import { Server } from "socket.io";
-import MessageService from './service/MessageService';
+import init from "./socket/init";
 
 const app = express();
 const httpServer = createServer(app);
@@ -49,42 +49,7 @@ app.use('/task', taskRouter);
 app.use('/quill', quillRouter);
 app.use('/chat',chatRouter);
 
-
-
-const messageService = new MessageService();
-// server-side
-io.on('connection', (socket) => {
-  console.log('a user is connected');
-  console.log("socket id: ", socket.id);
-
-  // joining chatrooms
-  let chatroom = "default";
-
-  socket.on("subscribe", async () => {
-
-    let chatHistory = await messageService.getMessage();
-    //console.log(chatHistory);
-    socket.join(chatroom);
-    console.log("a user has joined our room: " + chatroom);
-
-    io.to(chatroom).emit("joinRoom", chatHistory);
-  });
-
-
-  socket.on('chat message', async (data) => {
-    const message = data[0];
-    const sender_id = data[2];
-    await messageService.createMessage(sender_id,message);
-    io.to(chatroom).emit('chat message', data);
-  });
-
-  socket.on('disconnect', () => {
-    socket.leave(chatroom);
-    socket.disconnect();
-    console.log(`user ${socket.id} has left room ${chatroom}`);
-    io.to(chatroom).emit("leaveRoom", chatroom);
-  });
-});
+init(io);
 
 httpServer.listen(3004,() => {
   console.log('listening on *:3004');

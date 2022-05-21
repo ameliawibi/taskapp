@@ -1,8 +1,9 @@
 import path from 'path';
 import "dotenv/config";
-import { validationResult } from "express-validator";
+import { Result, validationResult } from "express-validator";
 import {getHashString, getHashedCookie} from "../utility/hash";
 import model from "../src/models";
+import { pool } from '../utility/connect';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.resolve();
