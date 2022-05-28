@@ -16,9 +16,13 @@ export default (sequelize, DataTypes) => {
       Task.hasMany(models.Comment, {
         foreignKey: 'task_id'
       });
-      Task.belongsToMany(models.Label, { through: models.TaskLabel, foreignKey: 'task_id'});
+      Task.belongsToMany(models.Label, {
+        through: models.TaskLabel,
+        foreignKey: 'task_id',
+        constraints: false});
       Task.hasMany(models.TaskLabel,{
-        foreignKey: 'task_id'
+        foreignKey: 'task_id',
+        constraints: false
       });
     }
   }

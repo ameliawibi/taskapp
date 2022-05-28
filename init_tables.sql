@@ -74,7 +74,6 @@ CREATE TABLE task_labels (
   id SERIAL PRIMARY KEY,
   task_id INTEGER,
   label_id INTEGER,
-  CONSTRAINT fk_tasklabel_task_id
   FOREIGN KEY (task_id)
   REFERENCES tasks(id)
   ON DELETE CASCADE,

@@ -9,6 +9,7 @@ let errorMessage = [];
 let payload ={};
 let hyperLink;
 
+
 dayjs.extend(relativeTime);
 
 if (process.env.ENV === "PRODUCTION") {
@@ -52,7 +53,7 @@ export async function getTaskPost (req,res, _next) {
     }
 }
 
-export async function postTask (req,res) {
+export async function postTaskThatWorks (req,res) {
   try{
   payload = req.body;
   
@@ -101,28 +102,76 @@ export async function postTask (req,res) {
       }
   sendPostTaskEmail(emailParams);
   res.redirect("/task");
+
 } catch (err) {
       console.error(err);
     }
+}
 
-  /*pool.query(`SELECT * FROM users WHERE id=${Number(task.assigned_to)}`)
-      .then((userList) => {
-      const emailParams = {
+export async function postTask (req,res) {
+  const t = await model.sequelize.transaction();
+  try{
+  payload = req.body;
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    //store error message and session data
+    errorMessage = errors.errors;
+    res.redirect(`/task/add/${req.params.statusid}`);
+    return;
+  }
+
+  const task = req.body;
+  const labelArray = task.label_id;
+  //console.log(labelArray);
+
+  //findall labels where the id:1 or id:2
+  const labelRow = await model.Label.findAll({
+    where: {
+      id: labelArray
+    }
+  });
+  //console.log(labelRow);
+
+  const newTask = await model.Task.create({
+  due_date: task.due_date,
+  name: task.name,
+  description: task.description,
+  assigned_to: Number(task.assigned_to),
+  task_status_id: req.params.statusid,
+  }, { transaction: t });
+
+  await newTask.addLabels(labelRow, {through: model.TaskLabel}, { transaction: t });
+  
+
+  const userList = await model.User.findByPk(Number(task.assigned_to));
+
+  // If the execution reaches this line, no errors were thrown.
+  // We commit the transaction.
+  await t.commit();
+
+  //console.log(userList);
+  const emailParams = {
         context: "You have a new task",
-        toEmail: userList.rows[0].email,
-        userName: userList.rows[0].name,
+        toEmail: userList.email,
+        userName: userList.name,
         taskName: task.name,
         taskDesc: task.description,
         dueDate: task.due_date,
         hyperLink : hyperLink,
       }
-      sendPostTaskEmail(emailParams);
-      res.redirect("/task");
-      })
-  .catch((error) => console.log(error.stack)); */
+  sendPostTaskEmail(emailParams);
+  res.redirect("/task");
+
+} catch (err) {
+      // If the execution reaches this line, an error was thrown.
+      // We rollback the transaction.
+      await t.rollback();
+      console.error(err);
+    }
 }
 
-export const postTaskOld = (req,res) => {
+export const postTaskRaw = (req,res) => {
   
   payload = req.body;
   

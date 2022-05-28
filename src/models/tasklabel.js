@@ -8,10 +8,12 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       TaskLabel.belongsTo(models.Task,{
-        foreignKey: 'task_id'
+        foreignKey: 'task_id',
+        constraints: false
       });
       TaskLabel.belongsTo(models.Label,{
-        foreignKey: 'label_id'
+        foreignKey: 'label_id',
+        constraints: false
       });
     }
   }

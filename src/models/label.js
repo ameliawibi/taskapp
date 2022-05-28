@@ -7,9 +7,13 @@ export default (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Label.belongsToMany(models.Task, { through: models.TaskLabel, foreignKey: 'label_id' });
+      Label.belongsToMany(models.Task, {
+      through: models.TaskLabel,
+      foreignKey: 'label_id',
+      constraints: false});
       Label.hasMany(models.TaskLabel,{
-        foreignKey: 'label_id'
+        foreignKey: 'label_id',
+        constraints: false
       });
     }
   }
